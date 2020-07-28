@@ -1,0 +1,9 @@
+{% extends 'encyclopedia/layout.html' %}
+
+    {% block search %}
+        <form action = "{% url 'encyclopedia:search' %}" method = "post">
+            {% csrf_token %}
+            {{ form }}
+            <input type = "submit">
+        </form>
+    {% endblock %}
