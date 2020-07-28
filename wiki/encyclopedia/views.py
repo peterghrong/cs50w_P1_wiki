@@ -31,3 +31,7 @@ def search(request):
         return render(request, "encyclopedia/index.html", {"entries": lst})
     else:
         return render(request, "encyclopedia/content.html", {"title": "Not Found"})
+
+
+def add(request):
+    return render(request, "encyclopedia/add.html")
