@@ -14,8 +14,6 @@ def title(request, title):
     return render(request, "encyclopedia/content.html", {"content": util.get_entry(title), "title": title})
 
 
-class NewSearchForm(forms.Form):
-    new_input = forms.CharField(label="New Search")
 # to be finished
 # if the query matches, the user should be redirected to a page containing results
 # if no query matches, then the user should be taken to a search result
@@ -33,5 +31,14 @@ def search(request):
         return render(request, "encyclopedia/content.html", {"title": "Not Found"})
 
 
+class NewPage(forms.Form):
+
+    # class Meta:
+    header = forms.CharField(
+        label="New Header", max_length=30, widget=forms.TextInput(attrs={'cols': 30, 'rows': 2}))
+
+    body = forms.CharField(label="New Contents")
+
+
 def add(request):
-    return render(request, "encyclopedia/add.html")
+    return render(request, "encyclopedia/add.html", {"form": NewPage()})
