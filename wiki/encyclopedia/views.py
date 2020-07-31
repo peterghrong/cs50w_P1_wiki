@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django import forms
 from os import path
+from wiki.settings import BASE_DIR
 from . import util
 
 
@@ -47,9 +48,8 @@ def add(request):
             body = form.cleaned_data["body"]
 
             # this part takes care of the md file generation
-            # need some fixing its not finding the path correctly
-            file_path = path.relpath(
-                f"wiki/entries{title.capitalize()}.md")
+            file_path = path.join(
+                BASE_DIR, f'entries/{title.capitalize()}.md')
             with open(file_path, "w") as file:
                 file.write(body)
             return render(request, "encyclopedia/content.html", {"content": body})
