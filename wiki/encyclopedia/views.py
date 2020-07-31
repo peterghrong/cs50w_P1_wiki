@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django import forms
-
+from os import path
 from . import util
 
 
@@ -12,12 +12,6 @@ def index(request):
 
 def title(request, title):
     return render(request, "encyclopedia/content.html", {"content": util.get_entry(title), "title": title})
-
-
-# to be finished
-# if the query matches, the user should be redirected to a page containing results
-# if no query matches, then the user should be taken to a search result
-# page that displays a list of encyclopedia entries as substring
 
 
 def search(request):
@@ -34,12 +28,30 @@ def search(request):
 class NewPage(forms.Form):
 
     # class Meta:
-    header = forms.CharField(
-        label="New Header")
+    header = forms.CharField(label="New Header")
 
-    body = forms.CharField(label="New Contents",
+    body = forms.CharField(label="New Content",
                            widget=forms.Textarea(attrs={'rows': 3}))
 
 
-def add(request):
+def create(request):
     return render(request, "encyclopedia/create.html", {"form": NewPage()})
+
+
+def add(request):
+    # boilerplate data validation
+    if request.method == "POST":
+        form = NewPage(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["header"]
+            body = form.cleaned_data["body"]
+
+            # this part takes care of the md file generation
+            # need some fixing its not finding the path correctly
+            file_path = path.relpath(
+                f"wiki/entries{title.capitalize()}.md")
+            with open(file_path, "w") as file:
+                file.write(body)
+            return render(request, "encyclopedia/content.html", {"content": body})
+
+    return render(request, "encyclopedia/content.html", {"content": "Failed"})
