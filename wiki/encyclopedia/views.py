@@ -35,10 +35,11 @@ class NewPage(forms.Form):
 
     # class Meta:
     header = forms.CharField(
-        label="New Header", max_length=30, widget=forms.TextInput(attrs={'cols': 30, 'rows': 2}))
+        label="New Header")
 
-    body = forms.CharField(label="New Contents")
+    body = forms.CharField(label="New Contents",
+                           widget=forms.Textarea(attrs={'rows': 3}))
 
 
 def add(request):
-    return render(request, "encyclopedia/add.html", {"form": NewPage()})
+    return render(request, "encyclopedia/create.html", {"form": NewPage()})
