@@ -47,10 +47,20 @@ def add(request):
             title = form.cleaned_data["header"]
             body = form.cleaned_data["body"]
             # this part takes care of the md file generation
-            file_path = path.join(
-                BASE_DIR, f'entries/{title.capitalize()}.md')
-            with open(file_path, "w") as file:
-                file.write(body)
-            return render(request, "encyclopedia/content.html", {"content": body})
+            if util.get_entry(title.capitalize()) is None:
+                file_path = path.join(
+                    BASE_DIR, f'entries/{title.capitalize()}.md')
+                with open(file_path, "w") as file:
+                    file.write(f"# {title.capitalize()} \n \n")
+                    file.write(body)
+                # redirect to the new website if successful
+                return redirect(f'/{title}')
+            # duplicate finder
+            else:
+                return render(request, "encyclopedia/content.html", {"title": "Error", "content": "Duplicate title"})
 
-    return render(request, "encyclopedia/content.html", {"content": "Failed"})
+        # re-renders the page if the input form is invalid
+        else:
+            return render(request, "encyclopedia/create.html", {'form': form})
+    # if the request method is not post
+    return render(request, "encyclopedia/create.html", {"form": NewPage()})
