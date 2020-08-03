@@ -46,7 +46,6 @@ def add(request):
         if form.is_valid():
             title = form.cleaned_data["header"]
             body = form.cleaned_data["body"]
-
             # this part takes care of the md file generation
             file_path = path.join(
                 BASE_DIR, f'entries/{title.capitalize()}.md')
