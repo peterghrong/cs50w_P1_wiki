@@ -1,9 +1,18 @@
 {% extends 'encyclopedia/layout.html' %}
         {%block body%}
-        {% if content is not None %}
-        <h1>{{ title }}</h1>
-        <p>{{ content }}</p>
-        {% else %}
-        <h1>Content is not found</h1>
-        {% endif %}
+                {% if content is not None %}
+                        <h1>{{ title }}</h1>
+                        <p>{{ content }}</p>
+                        <form action = "{% url 'encyclopedia:edit' title=title%}" method = "post" >
+                                {% csrf_token %}
+                                <input type = "submit" value= "Edit">
+                        </form>
+                {% else %}
+                {% comment %} <h1>Content is not found</h1> {% endcomment %}
+                        {% if message is None%}
+                                <h1> Content is not found </h1>
+                        {%else%}
+                                <h1>{{message}}</h1>
+                        {% endif %}
+                {%endif%}
         {%endblock%}

@@ -30,9 +30,13 @@ class NewPage(forms.Form):
 
     # class Meta:
     header = forms.CharField(label="New Header")
-
     body = forms.CharField(label="New Content",
                            widget=forms.Textarea(attrs={'rows': 3}))
+
+
+class EditForm(forms.Form):
+    body = forms.CharField(
+        label="Edit", widget=forms.Textarea(attrs={"size": "80"}), empty_value="hello")
 
 
 def create(request):
@@ -57,10 +61,17 @@ def add(request):
                 return redirect(f'/{title}')
             # duplicate finder
             else:
-                return render(request, "encyclopedia/content.html", {"title": "Error", "content": "Duplicate title"})
+                return render(request, "encyclopedia/content.html", {"message": "Error: Duplicate found"})
 
         # re-renders the page if the input form is invalid
         else:
             return render(request, "encyclopedia/create.html", {'form': form})
     # if the request method is not post
     return render(request, "encyclopedia/create.html", {"form": NewPage()})
+
+
+def edit(request, title):
+    file_path = path.join(
+        BASE_DIR, f'entries/{title.capitalize()}.md')
+    with open(file_path, "r") as content:
+        return render(request, "encyclopedia/edit.html", {'form': EditForm(), 'title': title})
