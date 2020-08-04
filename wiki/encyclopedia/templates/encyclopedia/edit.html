@@ -2,9 +2,9 @@
 
     {% block body %}
     <h1>{{title}}</h1>
-    <form method = "POST" action = "{% url 'encyclopedia:add'%}"> 
+    <form method = "POST" action = "{% url 'encyclopedia:change' title=title %}"> 
         {% csrf_token %}
         {{form}}
-    <input type = "submit">
+    <input type = "submit" value = "save">
     </form>
     {% endblock body %}

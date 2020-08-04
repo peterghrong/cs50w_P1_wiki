@@ -37,7 +37,7 @@ class NewPage(forms.Form):
 class EditForm(forms.Form):
     # init to take parameters into the variable initial
     def __init__(self, *args, **kwargs):
-        my_arg = kwargs.pop('my_arg')
+        my_arg = kwargs.pop('my_arg', None)
         super(EditForm, self).__init__(*args, **kwargs)
         self.fields['my_field'].initial = my_arg
 
@@ -82,3 +82,17 @@ def edit(request, title):
     with open(file_path, "r") as file:
         content = file.read()
         return render(request, "encyclopedia/edit.html", {'form': EditForm(my_arg=content), 'title': title})
+
+
+# Someone finish the form validation please!
+def change(request, title):
+    if request.method == "POST":
+        form = EditForm(request.POST)
+        if form.is_valid():
+            body = form.cleaned_data["my_field"]
+            file_path = path.join(
+                BASE_DIR, f'entries/{title}.md')
+            with open(file_path, "w") as file:
+                file.write(f"# {title.capitalize()} \n \n")
+                file.write(body)
+            return redirect(f'/{title}')
