@@ -35,8 +35,14 @@ class NewPage(forms.Form):
 
 
 class EditForm(forms.Form):
-    body = forms.CharField(
-        label="Edit", widget=forms.Textarea(attrs={"size": "80"}), empty_value="hello")
+    # init to take parameters into the variable initial
+    def __init__(self, *args, **kwargs):
+        my_arg = kwargs.pop('my_arg')
+        super(EditForm, self).__init__(*args, **kwargs)
+        self.fields['my_field'].initial = my_arg
+
+    my_field = forms.CharField(
+        label="Edit", widget=forms.Textarea(attrs={"size": "80"}))
 
 
 def create(request):
@@ -73,5 +79,6 @@ def add(request):
 def edit(request, title):
     file_path = path.join(
         BASE_DIR, f'entries/{title.capitalize()}.md')
-    with open(file_path, "r") as content:
-        return render(request, "encyclopedia/edit.html", {'form': EditForm(), 'title': title})
+    with open(file_path, "r") as file:
+        content = file.read()
+        return render(request, "encyclopedia/edit.html", {'form': EditForm(my_arg=content), 'title': title})
