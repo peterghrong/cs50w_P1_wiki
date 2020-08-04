@@ -3,6 +3,8 @@ from django import forms
 from os import path
 from wiki.settings import BASE_DIR
 from . import util
+import random
+import markdown2
 
 
 def index(request):
@@ -12,7 +14,7 @@ def index(request):
 
 
 def title(request, title):
-    return render(request, "encyclopedia/content.html", {"content": util.get_entry(title), "title": title})
+    return render(request, "encyclopedia/content.html", {"content": markdown2.markdown(util.get_entry(title)), "title": title})
 
 
 def search(request):
@@ -96,3 +98,9 @@ def change(request, title):
                 file.write(f"# {title.capitalize()} \n \n")
                 file.write(body)
             return redirect(f'/{title}')
+
+
+def rand(request):
+    lst = util.list_entries()
+    title = lst[random.randint(0, len(lst)-1)]
+    return redirect(f'/{title}')
